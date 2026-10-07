@@ -4,7 +4,36 @@
 
 ![](/project.png)
 
+## Inputs
+
+- **Wood Thickness** (number)
+- **Back Position** (number)
 
 
- 
+
+
+ # Convertible Sofa
+
+A CNC-cut convertible sofa / daybed after the 1970s Czechoslovak design by OPP Drevovyroba. The side profiles were traced from a side photo of the original. It is about 2000 mm wide with a 290 mm deck and a 390 mm seat height.
+
+## Inputs
+- **Wood Thickness**: sheet thickness in mm (default 19.05 = 3/4"). Every wood part and its placement follows it.
+- **Back Position**: 0 = sofa, 1 = bed. Values in between show the fold. The back and arms rotate 124.5 degrees forward about the pivot pin. The backrest lands flat at deck level in front of the seat, and the arms swing down to become legs for the bed extension. In bed mode the back cushion lies on top of the backrest.
+
+## Wood (tagged `plywood`, 19 parts on two 2440 x 1220 sheets)
+- **Seat Frame**: 2 Base Sides, each two stacked Base Layers (triangular profile with pivot, sofa-lock and bed-lock pin holes); Front/Back Long Rails; Center Stretcher; Seat Deck
+- **Legs**: 4 splayed legs, each two stacked Leg Layers
+- **Back and Arms**: 2 Arm Brackets (reclined strut + upswept armrest, pinned to the base) and a Backrest Panel
+
+## Foam (tagged `foam`, in the BOM, not cut)
+3 seat cushions and 1 back cushion, 100 mm thick.
+
+## Pins
+Bolt each Arm Bracket to its Base Side through the pivot hole. A second pin through the bracket's lower hole locks it: in the sofa-lock hole when upright, or in the bed-lock hole (the knob seen on the original) when flat. 
+
+![readme](/readmeid-1125728.svg?v=nw6uxnt)
+
+
+
+
 

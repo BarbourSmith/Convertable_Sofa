@@ -2,3 +2,6 @@
 # Bill Of Materials 
  |Part|Number Needed|Price|Source| 
  |----|----------|-----|-----|
+|Seat cushion foam, 1/3 of seat width x 720 x 100 mm (upholstered)|3|$0.00||
+|Back cushion foam, seat width x 450 x 100 mm (upholstered)|1|$0.00||
+|Total: |4|$0.00| |
