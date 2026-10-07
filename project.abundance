@@ -676,13 +676,30 @@
                   "ioValues": [
                     {
                       "name": "depth",
-                      "ioValue": 800,
-                      "currentEquation": "800"
+                      "ioValue": 800
                     },
                     {
                       "name": "deckZ",
                       "ioValue": 209.55,
                       "currentEquation": "152.4 + 3*thickness"
+                    },
+                    {
+                      "name": "frontEndHeight",
+                      "ioValue": 57.150000000000006,
+                      "currentEquation": "3*thickness"
+                    },
+                    {
+                      "name": "frontEndSlant",
+                      "ioValue": 7.5
+                    },
+                    {
+                      "name": "backEndHeight",
+                      "ioValue": 68.15,
+                      "currentEquation": "3*thickness + 11"
+                    },
+                    {
+                      "name": "backEndSlant",
+                      "ioValue": 5
                     },
                     {
                       "name": "apexY",
@@ -705,35 +722,16 @@
                       "ioValue": 81
                     },
                     {
-                      "name": "holeDiameter",
-                      "ioValue": 12,
-                      "currentEquation": "12"
-                    },
-                    {
-                      "name": "frontEndHeight",
-                      "ioValue": 57.150000000000006,
-                      "currentEquation": "3*thickness"
-                    },
-                    {
-                      "name": "frontEndSlant",
-                      "ioValue": 7.5
-                    },
-                    {
-                      "name": "backEndHeight",
-                      "ioValue": 68.15,
-                      "currentEquation": "3*thickness + 11"
-                    },
-                    {
-                      "name": "backEndSlant",
-                      "ioValue": 5
-                    },
-                    {
                       "name": "knobY",
                       "ioValue": 460
                     },
                     {
                       "name": "knobZ",
                       "ioValue": 171
+                    },
+                    {
+                      "name": "holeDiameter",
+                      "ioValue": 12
                     }
                   ],
                   "interpreterVersion": 1,
@@ -1833,10 +1831,6 @@
               "uniqueID": "id-1125529",
               "ioValues": [
                 {
-                  "name": "holeDiameter",
-                  "ioValue": 12
-                },
-                {
                   "name": "pivotY",
                   "ioValue": 292
                 },
@@ -1903,6 +1897,10 @@
                 {
                   "name": "upperHoleZ",
                   "ioValue": 381
+                },
+                {
+                  "name": "holeDiameter",
+                  "ioValue": 12
                 }
               ],
               "interpreterVersion": 1,
