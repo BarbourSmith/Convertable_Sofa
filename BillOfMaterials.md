@@ -4,4 +4,5 @@
  |----|----------|-----|-----|
 |Seat cushion foam, 1/3 of seat width x 720 x 100 mm (upholstered)|3|$0.00||
 |Back cushion foam, seat width x 450 x 100 mm (upholstered)|1|$0.00||
-|Total: |4|$0.00| |
+|WEICHUAN 6 in solid wood sofa leg (2-3/8 to 1-1/2 in taper, 5/16-18 hanger bolt) with mounting plate|4|$0.00|[Amazon](https://www.amazon.com/dp/B07K1SLZ6V?tag=maslowcnc01-20)|
+|Total: |8|$0.00| |

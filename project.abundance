@@ -94,7 +94,8 @@
                 },
                 {
                   "name": "y length",
-                  "ioValue": 70
+                  "ioValue": 38.1,
+                  "currentEquation": "2*thickness"
                 }
               ]
             },
@@ -229,7 +230,8 @@
                 },
                 {
                   "name": "y length",
-                  "ioValue": 70
+                  "ioValue": 38.1,
+                  "currentEquation": "2*thickness"
                 }
               ]
             },
@@ -451,8 +453,8 @@
             },
             {
               "name": "zDist",
-              "ioValue": 235.95,
-              "currentEquation": "255 - thickness"
+              "ioValue": 171.45000000000002,
+              "currentEquation": "152.4 + thickness"
             }
           ]
         },
@@ -476,8 +478,8 @@
             },
             {
               "name": "zDist",
-              "ioValue": 235.95,
-              "currentEquation": "255 - thickness"
+              "ioValue": 171.45000000000002,
+              "currentEquation": "152.4 + thickness"
             }
           ]
         },
@@ -502,8 +504,8 @@
             },
             {
               "name": "zDist",
-              "ioValue": 235.95,
-              "currentEquation": "255 - thickness"
+              "ioValue": 171.45000000000002,
+              "currentEquation": "152.4 + thickness"
             }
           ]
         },
@@ -527,8 +529,8 @@
             },
             {
               "name": "zDist",
-              "ioValue": 270.95,
-              "currentEquation": "290 - thickness"
+              "ioValue": 190.5,
+              "currentEquation": "152.4 + 2*thickness"
             }
           ]
         },
@@ -674,64 +676,69 @@
                   "ioValues": [
                     {
                       "name": "depth",
-                      "ioValue": 800
+                      "ioValue": 800,
+                      "currentEquation": "800"
                     },
                     {
                       "name": "deckZ",
-                      "ioValue": 290
-                    },
-                    {
-                      "name": "frontBottomY",
-                      "ioValue": 82
-                    },
-                    {
-                      "name": "frontBottomZ",
-                      "ioValue": 167
+                      "ioValue": 209.55,
+                      "currentEquation": "152.4 + 3*thickness"
                     },
                     {
                       "name": "apexY",
-                      "ioValue": 287
+                      "ioValue": 305
                     },
                     {
                       "name": "apexZ",
-                      "ioValue": 93
+                      "ioValue": 30
                     },
                     {
                       "name": "apexRadius",
                       "ioValue": 45
                     },
                     {
-                      "name": "backBottomY",
-                      "ioValue": 778
-                    },
-                    {
-                      "name": "backBottomZ",
-                      "ioValue": 202
-                    },
-                    {
                       "name": "pivotY",
-                      "ioValue": 362.4
+                      "ioValue": 292
                     },
                     {
                       "name": "pivotZ",
-                      "ioValue": 247.5
-                    },
-                    {
-                      "name": "strutAngle",
-                      "ioValue": 55.5
-                    },
-                    {
-                      "name": "lockPinOffset",
-                      "ioValue": 110
+                      "ioValue": 81
                     },
                     {
                       "name": "holeDiameter",
-                      "ioValue": 12
+                      "ioValue": 12,
+                      "currentEquation": "12"
+                    },
+                    {
+                      "name": "frontEndHeight",
+                      "ioValue": 57.150000000000006,
+                      "currentEquation": "3*thickness"
+                    },
+                    {
+                      "name": "frontEndSlant",
+                      "ioValue": 7.5
+                    },
+                    {
+                      "name": "backEndHeight",
+                      "ioValue": 68.15,
+                      "currentEquation": "3*thickness + 11"
+                    },
+                    {
+                      "name": "backEndSlant",
+                      "ioValue": 5
+                    },
+                    {
+                      "name": "knobY",
+                      "ioValue": 460
+                    },
+                    {
+                      "name": "knobZ",
+                      "ioValue": 171
                     }
                   ],
                   "interpreterVersion": 1,
-                  "code": "/**\n * Side profile of one layer of the triangular base (traced from the side photo),\n * in sofa coordinates: x = depth from the front, y = height above the floor, mm.\n * The top edge is the seat deck surface. The bottom forms a shallow V whose\n * rounded low point sits under the back/arm pivot.\n * Holes: pivot (the back/arm bracket rotates here), sofa lock pin (bracket's lower\n * end pinned here when upright) and bed lock pin (same bracket hole after flipping\n * the back forward flat).\n */\nfunction run(\n  depth: number = 800,\n  deckZ: number = 290,\n  frontBottomY: number = 82,\n  frontBottomZ: number = 167,\n  apexY: number = 287,\n  apexZ: number = 93,\n  apexRadius: number = 45,\n  backBottomY: number = 778,\n  backBottomZ: number = 202,\n  pivotY: number = 362.4,\n  pivotZ: number = 247.5,\n  strutAngle: number = 55.5,\n  lockPinOffset: number = 110,\n  holeDiameter: number = 12,\n): Assembly {\n  // Points on the two bottom edges, apexRadius away from the apex, joined by an arc\n  const toward = (p: number[], q: number[], dist: number) => {\n    const dx = q[0] - p[0];\n    const dy = q[1] - p[1];\n    const len = Math.hypot(dx, dy);\n    return [p[0] + (dx / len) * dist, p[1] + (dy / len) * dist];\n  };\n  const apex = [apexY, apexZ];\n  const a1 = toward(apex, [frontBottomY, frontBottomZ], apexRadius);\n  const a2 = toward(apex, [backBottomY, backBottomZ], apexRadius);\n  const aMid = toward(apex, [(a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2], apexRadius * 0.35);\n\n  const outline = replicad\n    .draw([0, deckZ])\n    .lineTo([frontBottomY, frontBottomZ])\n    .lineTo(a1)\n    .threePointsArcTo(a2, aMid)\n    .lineTo([backBottomY, backBottomZ])\n    .lineTo([depth, deckZ])\n    .close();\n\n  const a = (strutAngle * Math.PI) / 180;\n  const holes = [\n    [pivotY, pivotZ],\n    [pivotY - lockPinOffset * Math.cos(a), pivotZ - lockPinOffset * Math.sin(a)],\n    [pivotY + lockPinOffset, pivotZ],\n  ];\n  let shape = outline;\n  for (const h of holes) {\n    shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(h[0], h[1]));\n  }\n  return new Assembly({ geometry: shape });\n}\n",
-                  "compiledCode": "\"use strict\";\n/**\n * Side profile of one layer of the triangular base (traced from the side photo),\n * in sofa coordinates: x = depth from the front, y = height above the floor, mm.\n * The top edge is the seat deck surface. The bottom forms a shallow V whose\n * rounded low point sits under the back/arm pivot.\n * Holes: pivot (the back/arm bracket rotates here), sofa lock pin (bracket's lower\n * end pinned here when upright) and bed lock pin (same bracket hole after flipping\n * the back forward flat).\n */\nfunction run(depth = 800, deckZ = 290, frontBottomY = 82, frontBottomZ = 167, apexY = 287, apexZ = 93, apexRadius = 45, backBottomY = 778, backBottomZ = 202, pivotY = 362.4, pivotZ = 247.5, strutAngle = 55.5, lockPinOffset = 110, holeDiameter = 12) {\n    // Points on the two bottom edges, apexRadius away from the apex, joined by an arc\n    const toward = (p, q, dist) => {\n        const dx = q[0] - p[0];\n        const dy = q[1] - p[1];\n        const len = Math.hypot(dx, dy);\n        return [p[0] + (dx / len) * dist, p[1] + (dy / len) * dist];\n    };\n    const apex = [apexY, apexZ];\n    const a1 = toward(apex, [frontBottomY, frontBottomZ], apexRadius);\n    const a2 = toward(apex, [backBottomY, backBottomZ], apexRadius);\n    const aMid = toward(apex, [(a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2], apexRadius * 0.35);\n    const outline = replicad\n        .draw([0, deckZ])\n        .lineTo([frontBottomY, frontBottomZ])\n        .lineTo(a1)\n        .threePointsArcTo(a2, aMid)\n        .lineTo([backBottomY, backBottomZ])\n        .lineTo([depth, deckZ])\n        .close();\n    const a = (strutAngle * Math.PI) / 180;\n    const holes = [\n        [pivotY, pivotZ],\n        [pivotY - lockPinOffset * Math.cos(a), pivotZ - lockPinOffset * Math.sin(a)],\n        [pivotY + lockPinOffset, pivotZ],\n    ];\n    let shape = outline;\n    for (const h of holes) {\n        shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(h[0], h[1]));\n    }\n    return new Assembly({ geometry: shape });\n}\n"
+                  "code": "/**\n * Side profile of one layer of the base, traced from the close-up side photo,\n * in sofa coordinates: x = depth from the front, y = height above the floor, mm.\n * An inverted triangle: the top edge is the seat deck surface, the short ends cover\n * the rails, and the bottom edges meet in a point just above the floor, under the\n * back/arm bracket's pivot.\n * Holes: the pivot the back/arm bracket rotates on, and the knob.\n */\nfunction run(\n  depth: number = 800,\n  deckZ: number = 209.6,\n  frontEndHeight: number = 57,\n  frontEndSlant: number = 7.5,\n  backEndHeight: number = 68,\n  backEndSlant: number = 5,\n  apexY: number = 305,\n  apexZ: number = 30,\n  apexRadius: number = 12,\n  pivotY: number = 292,\n  pivotZ: number = 81,\n  knobY: number = 460,\n  knobZ: number = 171,\n  holeDiameter: number = 12,\n): Assembly {\n  const toward = (p: number[], q: number[], dist: number) => {\n    const dx = q[0] - p[0];\n    const dy = q[1] - p[1];\n    const len = Math.hypot(dx, dy);\n    return [p[0] + (dx / len) * dist, p[1] + (dy / len) * dist];\n  };\n  const frontBottom = [frontEndSlant, deckZ - frontEndHeight];\n  const backBottom = [depth - backEndSlant, deckZ - backEndHeight];\n  const apex = [apexY, apexZ];\n  // soften the point with a small arc\n  const a1 = toward(apex, frontBottom, apexRadius);\n  const a2 = toward(apex, backBottom, apexRadius);\n  const aMid = toward(apex, [(a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2], apexRadius * 0.3);\n\n  const outline = replicad\n    .draw([0, deckZ])\n    .lineTo(frontBottom)\n    .lineTo(a1)\n    .threePointsArcTo(a2, aMid)\n    .lineTo(backBottom)\n    .lineTo([depth, deckZ])\n    .close();\n\n  let shape = outline;\n  for (const h of [[pivotY, pivotZ], [knobY, knobZ]]) {\n    shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(h[0], h[1]));\n  }\n  return new Assembly({ geometry: shape });\n}\n",
+                  "compiledCode": "\"use strict\";\n/**\n * Side profile of one layer of the base, traced from the close-up side photo,\n * in sofa coordinates: x = depth from the front, y = height above the floor, mm.\n * An inverted triangle: the top edge is the seat deck surface, the short ends cover\n * the rails, and the bottom edges meet in a point just above the floor, under the\n * back/arm bracket's pivot.\n * Holes: the pivot the back/arm bracket rotates on, and the knob.\n */\nfunction run(depth = 800, deckZ = 209.6, frontEndHeight = 57, frontEndSlant = 7.5, backEndHeight = 68, backEndSlant = 5, apexY = 305, apexZ = 30, apexRadius = 12, pivotY = 292, pivotZ = 81, knobY = 460, knobZ = 171, holeDiameter = 12) {\n    const toward = (p, q, dist) => {\n        const dx = q[0] - p[0];\n        const dy = q[1] - p[1];\n        const len = Math.hypot(dx, dy);\n        return [p[0] + (dx / len) * dist, p[1] + (dy / len) * dist];\n    };\n    const frontBottom = [frontEndSlant, deckZ - frontEndHeight];\n    const backBottom = [depth - backEndSlant, deckZ - backEndHeight];\n    const apex = [apexY, apexZ];\n    // soften the point with a small arc\n    const a1 = toward(apex, frontBottom, apexRadius);\n    const a2 = toward(apex, backBottom, apexRadius);\n    const aMid = toward(apex, [(a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2], apexRadius * 0.3);\n    const outline = replicad\n        .draw([0, deckZ])\n        .lineTo(frontBottom)\n        .lineTo(a1)\n        .threePointsArcTo(a2, aMid)\n        .lineTo(backBottom)\n        .lineTo([depth, deckZ])\n        .close();\n    let shape = outline;\n    for (const h of [[pivotY, pivotZ], [knobY, knobZ]]) {\n        shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(h[0], h[1]));\n    }\n    return new Assembly({ geometry: shape });\n}\n"
                 },
                 {
                   "atomType": "Extrude",
@@ -1041,266 +1048,6 @@
           ]
         },
         {
-          "atomType": "Molecule",
-          "x": 0.2,
-          "y": 0.5,
-          "uniqueID": "id-1125433",
-          "name": "Leg",
-          "ioValues": [
-            {
-              "name": "thickness",
-              "ioValue": 19.05,
-              "currentEquation": "thickness"
-            }
-          ],
-          "topLevel": false,
-          "allAtoms": [
-            {
-              "atomType": "Output",
-              "x": 1,
-              "y": 0.5,
-              "uniqueID": "id-1125435",
-              "ioValues": [
-                {
-                  "name": "number or geometry",
-                  "ioValue": "__GEOMETRY_INPUT__"
-                }
-              ]
-            },
-            {
-              "atomType": "Molecule",
-              "x": 0.2,
-              "y": 0.5,
-              "uniqueID": "id-1125437",
-              "name": "Leg Layer",
-              "ioValues": [
-                {
-                  "name": "thickness",
-                  "ioValue": 19.05,
-                  "currentEquation": "thickness"
-                }
-              ],
-              "topLevel": false,
-              "allAtoms": [
-                {
-                  "atomType": "Output",
-                  "x": 1,
-                  "y": 0.5,
-                  "uniqueID": "id-1125439",
-                  "ioValues": [
-                    {
-                      "name": "number or geometry",
-                      "ioValue": "__GEOMETRY_INPUT__"
-                    }
-                  ]
-                },
-                {
-                  "atomType": "Code",
-                  "x": 0.2,
-                  "y": 0.5,
-                  "uniqueID": "id-1125441",
-                  "ioValues": [
-                    {
-                      "name": "topY",
-                      "ioValue": 110
-                    },
-                    {
-                      "name": "height",
-                      "ioValue": 255.95,
-                      "currentEquation": "275 - thickness"
-                    },
-                    {
-                      "name": "topWidth",
-                      "ioValue": 60
-                    },
-                    {
-                      "name": "bottomWidth",
-                      "ioValue": 32
-                    },
-                    {
-                      "name": "splay",
-                      "ioValue": 12
-                    }
-                  ],
-                  "interpreterVersion": 1,
-                  "code": "/**\n * Side-view outline of one leg lamination, drawn in sofa coordinates\n * (x = depth from the front of the seat frame, y = height above the floor), all in mm.\n * topY: depth position of the top center. height: floor to top of leg.\n * Top and bottom edges are horizontal; the leg leans forward by `splay` degrees.\n */\nfunction run(\n  topY: number = 100,\n  height: number = 270,\n  topWidth: number = 60,\n  bottomWidth: number = 32,\n  splay: number = 12,\n): Assembly {\n  const shift = height * Math.tan((splay * Math.PI) / 180);\n  const bottomY = topY - shift;\n  const outline = replicad\n    .draw([bottomY - bottomWidth / 2, 0])\n    .lineTo([bottomY + bottomWidth / 2, 0])\n    .lineTo([topY + topWidth / 2, height])\n    .lineTo([topY - topWidth / 2, height])\n    .close();\n  return new Assembly({ geometry: outline });\n}\n",
-                  "compiledCode": "\"use strict\";\n/**\n * Side-view outline of one leg lamination, drawn in sofa coordinates\n * (x = depth from the front of the seat frame, y = height above the floor), all in mm.\n * topY: depth position of the top center. height: floor to top of leg.\n * Top and bottom edges are horizontal; the leg leans forward by `splay` degrees.\n */\nfunction run(topY = 100, height = 270, topWidth = 60, bottomWidth = 32, splay = 12) {\n    const shift = height * Math.tan((splay * Math.PI) / 180);\n    const bottomY = topY - shift;\n    const outline = replicad\n        .draw([bottomY - bottomWidth / 2, 0])\n        .lineTo([bottomY + bottomWidth / 2, 0])\n        .lineTo([topY + topWidth / 2, height])\n        .lineTo([topY - topWidth / 2, height])\n        .close();\n    return new Assembly({ geometry: outline });\n}\n"
-                },
-                {
-                  "atomType": "Extrude",
-                  "x": 0.4,
-                  "y": 0.5,
-                  "uniqueID": "id-1125455",
-                  "ioValues": [
-                    {
-                      "name": "geometry",
-                      "ioValue": "__GEOMETRY_INPUT__"
-                    },
-                    {
-                      "name": "height",
-                      "ioValue": 19.05,
-                      "currentEquation": "thickness"
-                    }
-                  ]
-                },
-                {
-                  "atomType": "Rotate",
-                  "x": 0.6,
-                  "y": 0.5,
-                  "uniqueID": "id-1125459",
-                  "ioValues": [
-                    {
-                      "name": "geometry",
-                      "ioValue": "__GEOMETRY_INPUT__"
-                    },
-                    {
-                      "name": "x-axis degrees",
-                      "ioValue": 90
-                    },
-                    {
-                      "name": "y-axis degrees",
-                      "ioValue": 0
-                    },
-                    {
-                      "name": "z-axis degrees",
-                      "ioValue": 90
-                    }
-                  ]
-                },
-                {
-                  "atomType": "Tag",
-                  "x": 0.8,
-                  "y": 0.5,
-                  "uniqueID": "id-1125465",
-                  "name": "plywood",
-                  "ioValues": [
-                    {
-                      "name": "geometry",
-                      "ioValue": "__GEOMETRY_INPUT__"
-                    }
-                  ],
-                  "tags": [
-                    "plywood"
-                  ]
-                },
-                {
-                  "atomType": "Input",
-                  "x": 0,
-                  "y": 0.2,
-                  "uniqueID": "id-1125887",
-                  "name": "thickness",
-                  "type": "number",
-                  "options": []
-                }
-              ],
-              "allConnectors": [
-                {
-                  "ap2Name": "geometry",
-                  "ap1ID": "id-1125441",
-                  "ap2ID": "id-1125455"
-                },
-                {
-                  "ap2Name": "geometry",
-                  "ap1ID": "id-1125455",
-                  "ap2ID": "id-1125459"
-                },
-                {
-                  "ap2Name": "geometry",
-                  "ap1ID": "id-1125459",
-                  "ap2ID": "id-1125465"
-                },
-                {
-                  "ap2Name": "number or geometry",
-                  "ap1ID": "id-1125465",
-                  "ap2ID": "id-1125439"
-                }
-              ],
-              "fileTypeVersion": 1
-            },
-            {
-              "atomType": "Move",
-              "x": 0.5,
-              "y": 0.7,
-              "uniqueID": "id-1125468",
-              "ioValues": [
-                {
-                  "name": "geometry",
-                  "ioValue": "__GEOMETRY_INPUT__"
-                },
-                {
-                  "name": "xDist",
-                  "ioValue": 19.05,
-                  "currentEquation": "thickness"
-                },
-                {
-                  "name": "yDist",
-                  "ioValue": 0
-                },
-                {
-                  "name": "zDist",
-                  "ioValue": 0
-                }
-              ]
-            },
-            {
-              "atomType": "Assembly",
-              "x": 0.7,
-              "y": 0.5,
-              "uniqueID": "id-1125474",
-              "ioValues": [
-                {
-                  "name": "makeDisjoint",
-                  "ioValue": true
-                },
-                {
-                  "name": "Shape 1",
-                  "ioValue": "__GEOMETRY_INPUT__"
-                },
-                {
-                  "name": "Shape2",
-                  "ioValue": "__GEOMETRY_INPUT__"
-                },
-                {
-                  "name": "Shape3",
-                  "ioValue": "__GEOMETRY_INPUT__"
-                }
-              ]
-            },
-            {
-              "atomType": "Input",
-              "x": 0,
-              "y": 0.2,
-              "uniqueID": "id-1125890",
-              "name": "thickness",
-              "type": "number",
-              "options": []
-            }
-          ],
-          "allConnectors": [
-            {
-              "ap2Name": "geometry",
-              "ap1ID": "id-1125437",
-              "ap2ID": "id-1125468"
-            },
-            {
-              "ap2Name": "Shape 1",
-              "ap1ID": "id-1125437",
-              "ap2ID": "id-1125474"
-            },
-            {
-              "ap2Name": "Shape2",
-              "ap1ID": "id-1125468",
-              "ap2ID": "id-1125474"
-            },
-            {
-              "ap2Name": "number or geometry",
-              "ap1ID": "id-1125474",
-              "ap2ID": "id-1125435"
-            }
-          ],
-          "fileTypeVersion": 1
-        },
-        {
           "atomType": "Move",
           "x": 0.5,
           "y": 0.2,
@@ -1312,12 +1059,12 @@
             },
             {
               "name": "xDist",
-              "ioValue": 57.150000000000006,
-              "currentEquation": "3*thickness"
+              "ioValue": 102.15,
+              "currentEquation": "3*thickness + 45"
             },
             {
               "name": "yDist",
-              "ioValue": 0
+              "ioValue": 73
             },
             {
               "name": "zDist",
@@ -1337,40 +1084,16 @@
             },
             {
               "name": "xDist",
-              "ioValue": 1904.75,
-              "currentEquation": "2000 - 5*thickness"
+              "ioValue": 1897.85,
+              "currentEquation": "2000 - 3*thickness - 45"
             },
             {
               "name": "yDist",
-              "ioValue": 0
+              "ioValue": 73
             },
             {
               "name": "zDist",
               "ioValue": 0
-            }
-          ]
-        },
-        {
-          "atomType": "Rotate",
-          "x": 0.4,
-          "y": 0.7,
-          "uniqueID": "id-1125492",
-          "ioValues": [
-            {
-              "name": "geometry",
-              "ioValue": "__GEOMETRY_INPUT__"
-            },
-            {
-              "name": "x-axis degrees",
-              "ioValue": 0
-            },
-            {
-              "name": "y-axis degrees",
-              "ioValue": 0
-            },
-            {
-              "name": "z-axis degrees",
-              "ioValue": 180
             }
           ]
         },
@@ -1386,12 +1109,12 @@
             },
             {
               "name": "xDist",
-              "ioValue": 95.25,
-              "currentEquation": "5*thickness"
+              "ioValue": 102.15,
+              "currentEquation": "3*thickness + 45"
             },
             {
               "name": "yDist",
-              "ioValue": 800
+              "ioValue": 696
             },
             {
               "name": "zDist",
@@ -1411,12 +1134,12 @@
             },
             {
               "name": "xDist",
-              "ioValue": 1942.85,
-              "currentEquation": "2000 - 3*thickness"
+              "ioValue": 1897.85,
+              "currentEquation": "2000 - 3*thickness - 45"
             },
             {
               "name": "yDist",
-              "ioValue": 800
+              "ioValue": 696
             },
             {
               "name": "zDist",
@@ -1467,7 +1190,7 @@
               "ioValue": "__GEOMETRY_INPUT__"
             }
           ],
-          "selectedColor": "Sand"
+          "selectedColor": "Tan"
         },
         {
           "atomType": "Input",
@@ -1477,24 +1200,522 @@
           "name": "thickness",
           "type": "number",
           "options": []
+        },
+        {
+          "atomType": "Molecule",
+          "x": 0.2,
+          "y": 0.5,
+          "uniqueID": "id-1125930",
+          "name": "Leg Set",
+          "ioValues": [
+            {
+              "name": "thickness",
+              "ioValue": 19.05,
+              "currentEquation": "thickness"
+            }
+          ],
+          "topLevel": false,
+          "allAtoms": [
+            {
+              "atomType": "Output",
+              "x": 1,
+              "y": 0.5,
+              "uniqueID": "id-1125932",
+              "ioValues": [
+                {
+                  "name": "number or geometry",
+                  "ioValue": "__GEOMETRY_INPUT__"
+                }
+              ]
+            },
+            {
+              "atomType": "Input",
+              "x": 0,
+              "y": 0.2,
+              "uniqueID": "id-1125934",
+              "name": "thickness",
+              "type": "number",
+              "options": []
+            },
+            {
+              "atomType": "Molecule",
+              "x": 0.3,
+              "y": 0.3,
+              "uniqueID": "id-1125937",
+              "name": "Sofa Leg",
+              "topLevel": false,
+              "allAtoms": [
+                {
+                  "atomType": "Output",
+                  "x": 1,
+                  "y": 0.5,
+                  "uniqueID": "id-1125939",
+                  "ioValues": [
+                    {
+                      "name": "number or geometry",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    }
+                  ]
+                },
+                {
+                  "atomType": "Circle",
+                  "x": 0.2,
+                  "y": 0.3,
+                  "uniqueID": "id-1125941",
+                  "ioValues": [
+                    {
+                      "name": "diameter",
+                      "ioValue": 38.1
+                    }
+                  ]
+                },
+                {
+                  "atomType": "Circle",
+                  "x": 0.2,
+                  "y": 0.7,
+                  "uniqueID": "id-1125944",
+                  "ioValues": [
+                    {
+                      "name": "diameter",
+                      "ioValue": 60.3
+                    }
+                  ]
+                },
+                {
+                  "atomType": "Move",
+                  "x": 0.3,
+                  "y": 0.7,
+                  "uniqueID": "id-1125947",
+                  "ioValues": [
+                    {
+                      "name": "geometry",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "xDist",
+                      "ioValue": 0
+                    },
+                    {
+                      "name": "yDist",
+                      "ioValue": 0
+                    },
+                    {
+                      "name": "zDist",
+                      "ioValue": 152.4
+                    }
+                  ]
+                },
+                {
+                  "atomType": "Loft",
+                  "x": 0.5,
+                  "y": 0.5,
+                  "uniqueID": "id-1125953",
+                  "ioValues": [
+                    {
+                      "name": "Shape 1",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape2",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape3",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape 1",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape2",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape3",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    }
+                  ],
+                  "closedSelection": 0
+                },
+                {
+                  "atomType": "Tag",
+                  "x": 0.6,
+                  "y": 0.5,
+                  "uniqueID": "id-1125958",
+                  "name": "purchased",
+                  "ioValues": [
+                    {
+                      "name": "geometry",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    }
+                  ],
+                  "tags": [
+                    "purchased"
+                  ]
+                },
+                {
+                  "atomType": "Add-BOM-Tag",
+                  "x": 0.8,
+                  "y": 0.5,
+                  "uniqueID": "id-1125961",
+                  "name": "Add BOM Tag",
+                  "ioValues": [
+                    {
+                      "name": "geometry",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Item Name",
+                      "ioValue": "WEICHUAN 6 in solid wood sofa leg (2-3/8 to 1-1/2 in taper, 5/16-18 hanger bolt) with mounting plate",
+                      "currentEquation": "WEICHUAN 6 in solid wood sofa leg (2-3/8 to 1-1/2 in taper, 5/16-18 hanger bolt) with mounting plate"
+                    },
+                    {
+                      "name": "Number Needed",
+                      "ioValue": 1
+                    },
+                    {
+                      "name": "Cost (USD)",
+                      "ioValue": 0
+                    },
+                    {
+                      "name": "Source Link",
+                      "ioValue": "https://www.amazon.com/dp/B07K1SLZ6V",
+                      "currentEquation": "https://www.amazon.com/dp/B07K1SLZ6V"
+                    }
+                  ],
+                  "BOMitem": {
+                    "BOMitemName": "WEICHUAN 6 in solid wood sofa leg (2-3/8 to 1-1/2 in taper, 5/16-18 hanger bolt) with mounting plate",
+                    "numberNeeded": 1,
+                    "costUSD": 0,
+                    "source": "https://www.amazon.com/dp/B07K1SLZ6V"
+                  }
+                }
+              ],
+              "allConnectors": [
+                {
+                  "ap2Name": "Shape 1",
+                  "ap1ID": "id-1125941",
+                  "ap2ID": "id-1125953"
+                },
+                {
+                  "ap2Name": "geometry",
+                  "ap1ID": "id-1125944",
+                  "ap2ID": "id-1125947"
+                },
+                {
+                  "ap2Name": "Shape2",
+                  "ap1ID": "id-1125947",
+                  "ap2ID": "id-1125953"
+                },
+                {
+                  "ap2Name": "geometry",
+                  "ap1ID": "id-1125953",
+                  "ap2ID": "id-1125958"
+                },
+                {
+                  "ap2Name": "geometry",
+                  "ap1ID": "id-1125958",
+                  "ap2ID": "id-1125961"
+                },
+                {
+                  "ap2Name": "number or geometry",
+                  "ap1ID": "id-1125961",
+                  "ap2ID": "id-1125939"
+                }
+              ],
+              "fileTypeVersion": 1
+            },
+            {
+              "atomType": "Molecule",
+              "x": 0.3,
+              "y": 0.7,
+              "uniqueID": "id-1125968",
+              "name": "Leg Block",
+              "ioValues": [
+                {
+                  "name": "thickness",
+                  "ioValue": 19.05,
+                  "currentEquation": "thickness"
+                }
+              ],
+              "topLevel": false,
+              "allAtoms": [
+                {
+                  "atomType": "Output",
+                  "x": 1,
+                  "y": 0.5,
+                  "uniqueID": "id-1125970",
+                  "ioValues": [
+                    {
+                      "name": "number or geometry",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    }
+                  ]
+                },
+                {
+                  "atomType": "Input",
+                  "x": 0,
+                  "y": 0.2,
+                  "uniqueID": "id-1125972",
+                  "name": "thickness",
+                  "type": "number",
+                  "options": []
+                },
+                {
+                  "atomType": "Molecule",
+                  "x": 0.3,
+                  "y": 0.5,
+                  "uniqueID": "id-1125975",
+                  "name": "Leg Block Layer",
+                  "ioValues": [
+                    {
+                      "name": "thickness",
+                      "ioValue": 19.05,
+                      "currentEquation": "thickness"
+                    }
+                  ],
+                  "topLevel": false,
+                  "allAtoms": [
+                    {
+                      "atomType": "Output",
+                      "x": 1,
+                      "y": 0.5,
+                      "uniqueID": "id-1125977",
+                      "ioValues": [
+                        {
+                          "name": "number or geometry",
+                          "ioValue": "__GEOMETRY_INPUT__"
+                        }
+                      ]
+                    },
+                    {
+                      "atomType": "Input",
+                      "x": 0,
+                      "y": 0.2,
+                      "uniqueID": "id-1125979",
+                      "name": "thickness",
+                      "type": "number",
+                      "options": []
+                    },
+                    {
+                      "atomType": "Rectangle",
+                      "x": 0.2,
+                      "y": 0.5,
+                      "uniqueID": "id-1125982",
+                      "ioValues": [
+                        {
+                          "name": "x length",
+                          "ioValue": 90
+                        },
+                        {
+                          "name": "y length",
+                          "ioValue": 90
+                        }
+                      ]
+                    },
+                    {
+                      "atomType": "Extrude",
+                      "x": 0.5,
+                      "y": 0.5,
+                      "uniqueID": "id-1125986",
+                      "ioValues": [
+                        {
+                          "name": "geometry",
+                          "ioValue": "__GEOMETRY_INPUT__"
+                        },
+                        {
+                          "name": "height",
+                          "ioValue": 19.05,
+                          "currentEquation": "thickness"
+                        }
+                      ]
+                    },
+                    {
+                      "atomType": "Tag",
+                      "x": 0.7,
+                      "y": 0.5,
+                      "uniqueID": "id-1125990",
+                      "name": "plywood",
+                      "ioValues": [
+                        {
+                          "name": "geometry",
+                          "ioValue": "__GEOMETRY_INPUT__"
+                        }
+                      ],
+                      "tags": [
+                        "plywood"
+                      ]
+                    }
+                  ],
+                  "allConnectors": [
+                    {
+                      "ap2Name": "geometry",
+                      "ap1ID": "id-1125982",
+                      "ap2ID": "id-1125986"
+                    },
+                    {
+                      "ap2Name": "geometry",
+                      "ap1ID": "id-1125986",
+                      "ap2ID": "id-1125990"
+                    },
+                    {
+                      "ap2Name": "number or geometry",
+                      "ap1ID": "id-1125990",
+                      "ap2ID": "id-1125977"
+                    }
+                  ],
+                  "fileTypeVersion": 1
+                },
+                {
+                  "atomType": "Move",
+                  "x": 0.5,
+                  "y": 0.7,
+                  "uniqueID": "id-1125993",
+                  "ioValues": [
+                    {
+                      "name": "geometry",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "xDist",
+                      "ioValue": 0
+                    },
+                    {
+                      "name": "yDist",
+                      "ioValue": 0
+                    },
+                    {
+                      "name": "zDist",
+                      "ioValue": 19.05,
+                      "currentEquation": "thickness"
+                    }
+                  ]
+                },
+                {
+                  "atomType": "Assembly",
+                  "x": 0.7,
+                  "y": 0.5,
+                  "uniqueID": "id-1125999",
+                  "ioValues": [
+                    {
+                      "name": "makeDisjoint",
+                      "ioValue": true
+                    },
+                    {
+                      "name": "Shape 1",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape2",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    },
+                    {
+                      "name": "Shape3",
+                      "ioValue": "__GEOMETRY_INPUT__"
+                    }
+                  ]
+                }
+              ],
+              "allConnectors": [
+                {
+                  "ap2Name": "geometry",
+                  "ap1ID": "id-1125975",
+                  "ap2ID": "id-1125993"
+                },
+                {
+                  "ap2Name": "Shape 1",
+                  "ap1ID": "id-1125975",
+                  "ap2ID": "id-1125999"
+                },
+                {
+                  "ap2Name": "Shape2",
+                  "ap1ID": "id-1125993",
+                  "ap2ID": "id-1125999"
+                },
+                {
+                  "ap2Name": "number or geometry",
+                  "ap1ID": "id-1125999",
+                  "ap2ID": "id-1125970"
+                }
+              ],
+              "fileTypeVersion": 1
+            },
+            {
+              "atomType": "Move",
+              "x": 0.5,
+              "y": 0.7,
+              "uniqueID": "id-1126005",
+              "ioValues": [
+                {
+                  "name": "geometry",
+                  "ioValue": "__GEOMETRY_INPUT__"
+                },
+                {
+                  "name": "xDist",
+                  "ioValue": 0
+                },
+                {
+                  "name": "yDist",
+                  "ioValue": 0
+                },
+                {
+                  "name": "zDist",
+                  "ioValue": 152.4
+                }
+              ]
+            },
+            {
+              "atomType": "Assembly",
+              "x": 0.7,
+              "y": 0.5,
+              "uniqueID": "id-1126011",
+              "ioValues": [
+                {
+                  "name": "makeDisjoint",
+                  "ioValue": true
+                },
+                {
+                  "name": "Shape 1",
+                  "ioValue": "__GEOMETRY_INPUT__"
+                },
+                {
+                  "name": "Shape2",
+                  "ioValue": "__GEOMETRY_INPUT__"
+                },
+                {
+                  "name": "Shape3",
+                  "ioValue": "__GEOMETRY_INPUT__"
+                }
+              ]
+            }
+          ],
+          "allConnectors": [
+            {
+              "ap2Name": "Shape 1",
+              "ap1ID": "id-1125937",
+              "ap2ID": "id-1126011"
+            },
+            {
+              "ap2Name": "geometry",
+              "ap1ID": "id-1125968",
+              "ap2ID": "id-1126005"
+            },
+            {
+              "ap2Name": "Shape2",
+              "ap1ID": "id-1126005",
+              "ap2ID": "id-1126011"
+            },
+            {
+              "ap2Name": "number or geometry",
+              "ap1ID": "id-1126011",
+              "ap2ID": "id-1125932"
+            }
+          ],
+          "fileTypeVersion": 1
         }
       ],
       "allConnectors": [
-        {
-          "ap2Name": "geometry",
-          "ap1ID": "id-1125433",
-          "ap2ID": "id-1125480"
-        },
-        {
-          "ap2Name": "geometry",
-          "ap1ID": "id-1125433",
-          "ap2ID": "id-1125486"
-        },
-        {
-          "ap2Name": "geometry",
-          "ap1ID": "id-1125433",
-          "ap2ID": "id-1125492"
-        },
         {
           "ap2Name": "Shape 1",
           "ap1ID": "id-1125480",
@@ -1504,16 +1725,6 @@
           "ap2Name": "Shape2",
           "ap1ID": "id-1125486",
           "ap2ID": "id-1125510"
-        },
-        {
-          "ap2Name": "geometry",
-          "ap1ID": "id-1125492",
-          "ap2ID": "id-1125498"
-        },
-        {
-          "ap2Name": "geometry",
-          "ap1ID": "id-1125492",
-          "ap2ID": "id-1125504"
         },
         {
           "ap2Name": "Shape3",
@@ -1534,6 +1745,26 @@
           "ap2Name": "number or geometry",
           "ap1ID": "id-1125518",
           "ap2ID": "id-1125431"
+        },
+        {
+          "ap2Name": "geometry",
+          "ap1ID": "id-1125930",
+          "ap2ID": "id-1125480"
+        },
+        {
+          "ap2Name": "geometry",
+          "ap1ID": "id-1125930",
+          "ap2ID": "id-1125486"
+        },
+        {
+          "ap2Name": "geometry",
+          "ap1ID": "id-1125930",
+          "ap2ID": "id-1125498"
+        },
+        {
+          "ap2Name": "geometry",
+          "ap1ID": "id-1125930",
+          "ap2ID": "id-1125504"
         }
       ],
       "fileTypeVersion": 1
@@ -1602,54 +1833,81 @@
               "uniqueID": "id-1125529",
               "ioValues": [
                 {
-                  "name": "strutWidth",
-                  "ioValue": 85
-                },
-                {
-                  "name": "armThickness",
-                  "ioValue": 50,
-                  "currentEquation": "50"
-                },
-                {
-                  "name": "strutAngle",
-                  "ioValue": 55.5
-                },
-                {
-                  "name": "topS",
-                  "ioValue": 650
-                },
-                {
-                  "name": "bottomS",
-                  "ioValue": -110
-                },
-                {
-                  "name": "armS",
-                  "ioValue": 423
-                },
-                {
-                  "name": "armAngle",
-                  "ioValue": 111.5
-                },
-                {
-                  "name": "armLength",
-                  "ioValue": 218
-                },
-                {
-                  "name": "filletLength",
-                  "ioValue": 70
-                },
-                {
-                  "name": "lockPinOffset",
-                  "ioValue": 110
-                },
-                {
                   "name": "holeDiameter",
                   "ioValue": 12
+                },
+                {
+                  "name": "pivotY",
+                  "ioValue": 292
+                },
+                {
+                  "name": "pivotZ",
+                  "ioValue": 81
+                },
+                {
+                  "name": "endRadius",
+                  "ioValue": 23
+                },
+                {
+                  "name": "frontAngle",
+                  "ioValue": 57.5
+                },
+                {
+                  "name": "backAngle",
+                  "ioValue": 52
+                },
+                {
+                  "name": "topFrontZ",
+                  "ioValue": 715
+                },
+                {
+                  "name": "topBackZ",
+                  "ioValue": 680
+                },
+                {
+                  "name": "capY",
+                  "ioValue": 730
+                },
+                {
+                  "name": "capZ",
+                  "ioValue": 738
+                },
+                {
+                  "name": "crotchZ",
+                  "ioValue": 421
+                },
+                {
+                  "name": "armRootZ",
+                  "ioValue": 600
+                },
+                {
+                  "name": "armTopY",
+                  "ioValue": 500
+                },
+                {
+                  "name": "armTipY",
+                  "ioValue": 265
+                },
+                {
+                  "name": "armTipTopZ",
+                  "ioValue": 571
+                },
+                {
+                  "name": "armTipBottomZ",
+                  "ioValue": 521
+                },
+                {
+                  "name": "upperHoleY",
+                  "ioValue": 501
+                },
+                {
+                  "name": "upperHoleZ",
+                  "ioValue": 381
                 }
               ],
               "interpreterVersion": 1,
-              "code": "/**\n * Side profile of the arm / backrest bracket (traced from the side photo), drawn in the\n * pivot frame: origin = pivot pin, x = depth (toward the back), y = height, sofa position, mm.\n * A reclined strut carries the backrest. Its rounded lower end is pinned to the base;\n * an armrest branch leaves the front edge at armAngle to the strut.\n * Folding the back forward by (180 - strutAngle) lays the strut flat at deck level and\n * swings the armrest straight down so it becomes a leg for the bed extension;\n * armLength is chosen so the arm then reaches the floor.\n * Holes: pivot (origin) and the lock pin at lockPinOffset down the strut.\n */\nfunction run(\n  strutAngle: number = 55.5,\n  strutWidth: number = 85,\n  topS: number = 650,\n  bottomS: number = -110,\n  armS: number = 423,\n  armAngle: number = 111.5,\n  armLength: number = 190,\n  armThickness: number = 50,\n  filletLength: number = 70,\n  lockPinOffset: number = 110,\n  holeDiameter: number = 12,\n): Assembly {\n  const a = (strutAngle * Math.PI) / 180;\n  const h = strutWidth / 2;\n  // local (s, n): s up the strut, n across it toward the back\n  const P = (s: number, n: number) => [\n    s * Math.cos(a) + n * Math.sin(a),\n    s * Math.sin(a) - n * Math.cos(a),\n  ];\n  const Pp = (p: number[]) => P(p[0], p[1]);\n  // arm direction in (s, n); +90 deg from the strut axis is -n\n  const b = (armAngle * Math.PI) / 180;\n  const u = [Math.cos(b), -Math.sin(b)];\n  const v = [-u[1], u[0]]; // across the arm, toward +s\n  const r = armThickness / 2;\n  const root = [armS, -h];\n  const along = (p: number[], t: number) => [p[0] + u[0] * t, p[1] + u[1] * t];\n  // where each arm edge meets the strut front edge (n = -h)\n  const edgeRoot = (k: number) => {\n    const p = [root[0] + v[0] * r * k, root[1] + v[1] * r * k];\n    return along(p, (-h - p[1]) / u[1]);\n  };\n  const upRoot = edgeRoot(1);\n  const loRoot = edgeRoot(-1);\n  const tipC = along(root, armLength - r);\n  const upTip = [tipC[0] + v[0] * r, tipC[1] + v[1] * r];\n  const loTip = [tipC[0] - v[0] * r, tipC[1] - v[1] * r];\n  const tipEnd = along(tipC, r);\n  const f = filletLength;\n\n  const outline = replicad\n    .draw(P(bottomS, -h))\n    // front edge up to the crotch under the arm\n    .lineTo(P(loRoot[0] - f, -h))\n    .cubicBezierCurveTo(Pp(along(loRoot, f)), P(loRoot[0] - f * 0.4, -h), Pp(along(loRoot, f * 0.4)))\n    // underside of the arm, rounded tip, top of the arm\n    .lineTo(Pp(loTip))\n    .threePointsArcTo(Pp(upTip), Pp(tipEnd))\n    .lineTo(Pp(along(upRoot, f * 0.6)))\n    .cubicBezierCurveTo(P(upRoot[0] + f * 0.8, -h), Pp(along(upRoot, f * 0.2)), P(upRoot[0] + f * 0.3, -h))\n    // rest of the front edge, rounded top, back edge, rounded lower end\n    .lineTo(P(topS, -h))\n    .threePointsArcTo(P(topS, h), P(topS + h, 0))\n    .lineTo(P(bottomS, h))\n    .threePointsArcTo(P(bottomS, -h), P(bottomS - h, 0))\n    .close();\n\n  let shape = outline;\n  for (const hole of [P(0, 0), P(-lockPinOffset, 0)]) {\n    shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(hole[0], hole[1]));\n  }\n  return new Assembly({ geometry: shape });\n}\n",
-              "compiledCode": "\"use strict\";\n/**\n * Side profile of the arm / backrest bracket (traced from the side photo), drawn in the\n * pivot frame: origin = pivot pin, x = depth (toward the back), y = height, sofa position, mm.\n * A reclined strut carries the backrest. Its rounded lower end is pinned to the base;\n * an armrest branch leaves the front edge at armAngle to the strut.\n * Folding the back forward by (180 - strutAngle) lays the strut flat at deck level and\n * swings the armrest straight down so it becomes a leg for the bed extension;\n * armLength is chosen so the arm then reaches the floor.\n * Holes: pivot (origin) and the lock pin at lockPinOffset down the strut.\n */\nfunction run(strutAngle = 55.5, strutWidth = 85, topS = 650, bottomS = -110, armS = 423, armAngle = 111.5, armLength = 190, armThickness = 50, filletLength = 70, lockPinOffset = 110, holeDiameter = 12) {\n    const a = (strutAngle * Math.PI) / 180;\n    const h = strutWidth / 2;\n    // local (s, n): s up the strut, n across it toward the back\n    const P = (s, n) => [\n        s * Math.cos(a) + n * Math.sin(a),\n        s * Math.sin(a) - n * Math.cos(a),\n    ];\n    const Pp = (p) => P(p[0], p[1]);\n    // arm direction in (s, n); +90 deg from the strut axis is -n\n    const b = (armAngle * Math.PI) / 180;\n    const u = [Math.cos(b), -Math.sin(b)];\n    const v = [-u[1], u[0]]; // across the arm, toward +s\n    const r = armThickness / 2;\n    const root = [armS, -h];\n    const along = (p, t) => [p[0] + u[0] * t, p[1] + u[1] * t];\n    // where each arm edge meets the strut front edge (n = -h)\n    const edgeRoot = (k) => {\n        const p = [root[0] + v[0] * r * k, root[1] + v[1] * r * k];\n        return along(p, (-h - p[1]) / u[1]);\n    };\n    const upRoot = edgeRoot(1);\n    const loRoot = edgeRoot(-1);\n    const tipC = along(root, armLength - r);\n    const upTip = [tipC[0] + v[0] * r, tipC[1] + v[1] * r];\n    const loTip = [tipC[0] - v[0] * r, tipC[1] - v[1] * r];\n    const tipEnd = along(tipC, r);\n    const f = filletLength;\n    const outline = replicad\n        .draw(P(bottomS, -h))\n        // front edge up to the crotch under the arm\n        .lineTo(P(loRoot[0] - f, -h))\n        .cubicBezierCurveTo(Pp(along(loRoot, f)), P(loRoot[0] - f * 0.4, -h), Pp(along(loRoot, f * 0.4)))\n        // underside of the arm, rounded tip, top of the arm\n        .lineTo(Pp(loTip))\n        .threePointsArcTo(Pp(upTip), Pp(tipEnd))\n        .lineTo(Pp(along(upRoot, f * 0.6)))\n        .cubicBezierCurveTo(P(upRoot[0] + f * 0.8, -h), Pp(along(upRoot, f * 0.2)), P(upRoot[0] + f * 0.3, -h))\n        // rest of the front edge, rounded top, back edge, rounded lower end\n        .lineTo(P(topS, -h))\n        .threePointsArcTo(P(topS, h), P(topS + h, 0))\n        .lineTo(P(bottomS, h))\n        .threePointsArcTo(P(bottomS, -h), P(bottomS - h, 0))\n        .close();\n    let shape = outline;\n    for (const hole of [P(0, 0), P(-lockPinOffset, 0)]) {\n        shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(hole[0], hole[1]));\n    }\n    return new Assembly({ geometry: shape });\n}\n"
+              "code": "/**\n * Side profile of the arm / backrest bracket, traced from the side photos.\n * Points are in sofa coordinates (x = depth from the front, y = height above\n * the floor, mm, upright position); the result is shifted so the pivot (the lower\n * hole) sits at the origin, ready to be rotated for the bed position.\n * The strut tapers from a narrow rounded lower end (around the pivot) to a wide\n * rounded top; the armrest leaves the front edge and rises slightly toward its tip.\n */\nfunction run(\n  pivotY: number = 292,\n  pivotZ: number = 81,\n  endRadius: number = 23,\n  frontAngle: number = 57.5,\n  backAngle: number = 52,\n  topFrontZ: number = 715,\n  topBackZ: number = 680,\n  capY: number = 730,\n  capZ: number = 738,\n  crotchZ: number = 421,\n  armRootZ: number = 560,\n  armTopY: number = 500,\n  armTipY: number = 265,\n  armTipTopZ: number = 571,\n  armTipBottomZ: number = 521,\n  upperHoleY: number = 501,\n  upperHoleZ: number = 381,\n  holeDiameter: number = 12,\n): Assembly {\n  const rad = (deg: number) => (deg * Math.PI) / 180;\n  const df = [Math.cos(rad(frontAngle)), Math.sin(rad(frontAngle))];\n  const db = [Math.cos(rad(backAngle)), Math.sin(rad(backAngle))];\n  // tangent points of the front and back edges on the rounded lower end\n  const f0 = [pivotY - endRadius * df[1], pivotZ + endRadius * df[0]];\n  const b0 = [pivotY + endRadius * db[1], pivotZ - endRadius * db[0]];\n  const frontAt = (z: number) => [f0[0] + ((z - f0[1]) / df[1]) * df[0], z];\n  const backAt = (z: number) => [b0[0] + ((z - b0[1]) / db[1]) * db[0], z];\n  const mid = [-(df[0] + db[0]), -(df[1] + db[1])];\n  const ml = Math.hypot(mid[0], mid[1]);\n  const endMid = [pivotY + (endRadius * mid[0]) / ml, pivotZ + (endRadius * mid[1]) / ml];\n\n  const crotch = frontAt(crotchZ);\n  const armRoot = frontAt(armRootZ);\n  const armTop = [armTopY, armTipTopZ + ((armTopY - armTipY) / (armRoot[0] - armTipY)) * (armRoot[1] - armTipTopZ) * 0.6];\n  const tipR = (armTipTopZ - armTipBottomZ) / 2;\n  const tipMid = [armTipY - tipR, (armTipTopZ + armTipBottomZ) / 2];\n\n  const outline = replicad\n    .draw(b0)\n    .threePointsArcTo(f0, endMid)\n    .lineTo(crotch)\n    // underside of the armrest: leaves the front edge and sweeps forward to the tip\n    .cubicBezierCurveTo(\n      [armTipY, armTipBottomZ],\n      [crotch[0] + 40 * df[0], crotch[1] + 40 * df[1]],\n      [armTipY + 110, armTipBottomZ - 6],\n    )\n    .threePointsArcTo([armTipY, armTipTopZ], tipMid)\n    .lineTo(armTop)\n    // top of the armrest blends back into the front edge\n    .cubicBezierCurveTo(\n      armRoot,\n      [armTop[0] + 30, armTop[1] - 3],\n      [armRoot[0] - 22 * df[0], armRoot[1] - 22 * df[1]],\n    )\n    .lineTo(frontAt(topFrontZ))\n    .threePointsArcTo(backAt(topBackZ), [capY, capZ])\n    .close();\n\n  let shape = outline;\n  for (const h of [[pivotY, pivotZ], [upperHoleY, upperHoleZ]]) {\n    shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(h[0], h[1]));\n  }\n  return new Assembly({ geometry: shape.translate(-pivotY, -pivotZ) });\n}\n",
+              "compiledCode": "\"use strict\";\n/**\n * Side profile of the arm / backrest bracket, traced from the side photos.\n * Points are in sofa coordinates (x = depth from the front, y = height above\n * the floor, mm, upright position); the result is shifted so the pivot (the lower\n * hole) sits at the origin, ready to be rotated for the bed position.\n * The strut tapers from a narrow rounded lower end (around the pivot) to a wide\n * rounded top; the armrest leaves the front edge and rises slightly toward its tip.\n */\nfunction run(pivotY = 292, pivotZ = 81, endRadius = 23, frontAngle = 57.5, backAngle = 52, topFrontZ = 715, topBackZ = 680, capY = 730, capZ = 738, crotchZ = 421, armRootZ = 560, armTopY = 500, armTipY = 265, armTipTopZ = 571, armTipBottomZ = 521, upperHoleY = 501, upperHoleZ = 381, holeDiameter = 12) {\n    const rad = (deg) => (deg * Math.PI) / 180;\n    const df = [Math.cos(rad(frontAngle)), Math.sin(rad(frontAngle))];\n    const db = [Math.cos(rad(backAngle)), Math.sin(rad(backAngle))];\n    // tangent points of the front and back edges on the rounded lower end\n    const f0 = [pivotY - endRadius * df[1], pivotZ + endRadius * df[0]];\n    const b0 = [pivotY + endRadius * db[1], pivotZ - endRadius * db[0]];\n    const frontAt = (z) => [f0[0] + ((z - f0[1]) / df[1]) * df[0], z];\n    const backAt = (z) => [b0[0] + ((z - b0[1]) / db[1]) * db[0], z];\n    const mid = [-(df[0] + db[0]), -(df[1] + db[1])];\n    const ml = Math.hypot(mid[0], mid[1]);\n    const endMid = [pivotY + (endRadius * mid[0]) / ml, pivotZ + (endRadius * mid[1]) / ml];\n    const crotch = frontAt(crotchZ);\n    const armRoot = frontAt(armRootZ);\n    const armTop = [armTopY, armTipTopZ + ((armTopY - armTipY) / (armRoot[0] - armTipY)) * (armRoot[1] - armTipTopZ) * 0.6];\n    const tipR = (armTipTopZ - armTipBottomZ) / 2;\n    const tipMid = [armTipY - tipR, (armTipTopZ + armTipBottomZ) / 2];\n    const outline = replicad\n        .draw(b0)\n        .threePointsArcTo(f0, endMid)\n        .lineTo(crotch)\n        // underside of the armrest: leaves the front edge and sweeps forward to the tip\n        .cubicBezierCurveTo([armTipY, armTipBottomZ], [crotch[0] + 40 * df[0], crotch[1] + 40 * df[1]], [armTipY + 110, armTipBottomZ - 6])\n        .threePointsArcTo([armTipY, armTipTopZ], tipMid)\n        .lineTo(armTop)\n        // top of the armrest blends back into the front edge\n        .cubicBezierCurveTo(armRoot, [armTop[0] + 30, armTop[1] - 3], [armRoot[0] - 22 * df[0], armRoot[1] - 22 * df[1]])\n        .lineTo(frontAt(topFrontZ))\n        .threePointsArcTo(backAt(topBackZ), [capY, capZ])\n        .close();\n    let shape = outline;\n    for (const h of [[pivotY, pivotZ], [upperHoleY, upperHoleZ]]) {\n        shape = shape.cut(replicad.drawCircle(holeDiameter / 2).translate(h[0], h[1]));\n    }\n    return new Assembly({ geometry: shape.translate(-pivotY, -pivotZ) });\n}\n"
             },
             {
               "atomType": "Extrude",
@@ -1782,7 +2040,7 @@
                 },
                 {
                   "name": "y length",
-                  "ioValue": 278
+                  "ioValue": 356
                 }
               ]
             },
@@ -1819,11 +2077,12 @@
                 },
                 {
                   "name": "yDist",
-                  "ioValue": 511
+                  "ioValue": 597.8
                 },
                 {
                   "name": "zDist",
-                  "ioValue": -42.5
+                  "ioValue": -206.45000000000002,
+                  "currentEquation": "-187.4 - thickness"
                 }
               ]
             },
@@ -1839,7 +2098,7 @@
                 },
                 {
                   "name": "x-axis degrees",
-                  "ioValue": 55.5
+                  "ioValue": 68
                 },
                 {
                   "name": "y-axis degrees",
@@ -2055,11 +2314,11 @@
             },
             {
               "name": "yDist",
-              "ioValue": 362.4
+              "ioValue": 292
             },
             {
               "name": "zDist",
-              "ioValue": 247.5
+              "ioValue": 81
             }
           ]
         }
@@ -2183,7 +2442,7 @@
                 },
                 {
                   "name": "y length",
-                  "ioValue": 720
+                  "ioValue": 800
                 }
               ]
             },
@@ -2199,7 +2458,7 @@
                 },
                 {
                   "name": "height",
-                  "ioValue": 100
+                  "ioValue": 150
                 }
               ]
             },
@@ -2334,7 +2593,7 @@
                 },
                 {
                   "name": "y length",
-                  "ioValue": 450
+                  "ioValue": 430
                 }
               ]
             },
@@ -2350,7 +2609,7 @@
                 },
                 {
                   "name": "height",
-                  "ioValue": 100
+                  "ioValue": 120
                 }
               ]
             },
@@ -2370,13 +2629,11 @@
                 },
                 {
                   "name": "yDist",
-                  "ioValue": 447,
-                  "currentEquation": "447 + 150*position"
+                  "ioValue": 593.5
                 },
                 {
                   "name": "zDist",
-                  "ioValue": -23.45,
-                  "currentEquation": "thickness - 42.5 - position*(thickness + 100)"
+                  "ioValue": -187.4
                 }
               ]
             },
@@ -2392,7 +2649,7 @@
                 },
                 {
                   "name": "x-axis degrees",
-                  "ioValue": 55.5
+                  "ioValue": 68
                 },
                 {
                   "name": "y-axis degrees",
@@ -2556,11 +2813,12 @@
             },
             {
               "name": "yDist",
-              "ioValue": 360
+              "ioValue": 400
             },
             {
               "name": "zDist",
-              "ioValue": 290
+              "ioValue": 209.55,
+              "currentEquation": "152.4 + 3*thickness"
             }
           ]
         },
@@ -2580,11 +2838,12 @@
             },
             {
               "name": "yDist",
-              "ioValue": 360
+              "ioValue": 400
             },
             {
               "name": "zDist",
-              "ioValue": 290
+              "ioValue": 209.55,
+              "currentEquation": "152.4 + 3*thickness"
             }
           ]
         },
@@ -2605,11 +2864,12 @@
             },
             {
               "name": "yDist",
-              "ioValue": 360
+              "ioValue": 400
             },
             {
               "name": "zDist",
-              "ioValue": 290
+              "ioValue": 209.55,
+              "currentEquation": "152.4 + 3*thickness"
             }
           ]
         },
@@ -2629,11 +2889,11 @@
             },
             {
               "name": "yDist",
-              "ioValue": 362.4
+              "ioValue": 292
             },
             {
               "name": "zDist",
-              "ioValue": 247.5
+              "ioValue": 81
             }
           ]
         },
@@ -2820,8 +3080,8 @@
       ],
       "orientations": [
         {
-          "downwardFaceIndex": 12,
-          "faceCount": 14,
+          "downwardFaceIndex": 10,
+          "faceCount": 12,
           "faceNormal": [
             -1,
             1.1102230246251565e-16,
@@ -2829,8 +3089,8 @@
           ]
         },
         {
-          "downwardFaceIndex": 12,
-          "faceCount": 14,
+          "downwardFaceIndex": 10,
+          "faceCount": 12,
           "faceNormal": [
             -1,
             1.1102230246251565e-16,
@@ -2874,8 +3134,8 @@
           ]
         },
         {
-          "downwardFaceIndex": 12,
-          "faceCount": 14,
+          "downwardFaceIndex": 10,
+          "faceCount": 12,
           "faceNormal": [
             -1,
             1.1102230246251565e-16,
@@ -2883,98 +3143,8 @@
           ]
         },
         {
-          "downwardFaceIndex": 12,
-          "faceCount": 14,
-          "faceNormal": [
-            -1,
-            1.1102230246251565e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            -1,
-            1.1102230246251565e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            -1,
-            1.1102230246251565e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            -1,
-            1.1102230246251565e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            -1,
-            1.1102230246251565e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            1,
-            -2.33486982377251e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            1,
-            -2.33486982377251e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            1,
-            -2.33486982377251e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 4,
-          "faceCount": 6,
-          "faceNormal": [
-            1,
-            -2.33486982377251e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 14,
-          "faceCount": 16,
-          "faceNormal": [
-            -1,
-            1.1102230246251565e-16,
-            -1.1102230246251565e-16
-          ]
-        },
-        {
-          "downwardFaceIndex": 14,
-          "faceCount": 16,
+          "downwardFaceIndex": 10,
+          "faceCount": 12,
           "faceNormal": [
             -1,
             1.1102230246251565e-16,
@@ -2986,8 +3156,98 @@
           "faceCount": 6,
           "faceNormal": [
             0,
-            0.8241261886220157,
-            -0.5664062369248328
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0,
+            -1
+          ]
+        },
+        {
+          "downwardFaceIndex": 13,
+          "faceCount": 15,
+          "faceNormal": [
+            -1,
+            1.1102230246251565e-16,
+            -1.1102230246251565e-16
+          ]
+        },
+        {
+          "downwardFaceIndex": 13,
+          "faceCount": 15,
+          "faceNormal": [
+            -1,
+            1.1102230246251565e-16,
+            -1.1102230246251565e-16
+          ]
+        },
+        {
+          "downwardFaceIndex": 4,
+          "faceCount": 6,
+          "faceNormal": [
+            0,
+            0.9271838545667874,
+            -0.37460659341591196
           ]
         }
       ],

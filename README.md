@@ -31,7 +31,7 @@ A CNC-cut convertible sofa / daybed after the 1970s Czechoslovak design by OPP D
 ## Pins
 Bolt each Arm Bracket to its Base Side through the pivot hole. A second pin through the bracket's lower hole locks it: in the sofa-lock hole when upright, or in the bed-lock hole (the knob seen on the original) when flat. 
 
-![readme](/readmeid-1125728.svg?v=nw6uxnt)
+![readme](/readmeid-1125728.svg?v=rur34j)
 
 
 
